@@ -1,8 +1,41 @@
 # PulseIQ
 
-PulseIQ is a full-stack operational intelligence platform for facility teams. Employees submit plain-language business updates, and PulseIQ turns those updates into structured events, evidence-backed timelines, source-grounded answers, and role-aware management workflows.
+### Transforming Operational Chatter into Business Intelligence
 
-The core product principle is simple:
+PulseIQ is an AI-powered operational intelligence platform for SMEs, manufacturers, traders, distributors, and facility teams.
+
+Businesses generate hundreds of operational updates every week across production, sales, procurement, dispatch, finance, and support teams. Critical business knowledge often stays buried inside chats, emails, and status updates, making it hard for owners to track issues, understand operational health, and make informed decisions.
+
+PulseIQ converts unstructured employee updates into structured business events, builds evidence-backed timelines, and lets owners ask natural-language questions with source-grounded answers and confidence scores.
+
+Instead of acting as a generic chatbot, PulseIQ serves as an operational memory layer for the business: preserving observations, constructing business facts, and generating insights grounded in evidence.
+
+## Key Capabilities
+
+- Multi-tenant architecture for multiple businesses
+- Role-based access for super admins, facility admins, and employees
+- Natural-language employee updates
+- AI-powered event and entity extraction
+- Raw entity mention preservation
+- Immutable business event store
+- Timeline generation
+- Hybrid retrieval with SQL and semantic search
+- Source-backed answers with confidence scores
+- Auditability and trust-first design
+- Operational intelligence for manufacturers, traders, distributors, and facility teams
+
+## Example Questions
+
+- What is pending this week?
+- Any issues with Rajan Traders?
+- How was Line 2 this week?
+- Which orders were delayed?
+- Which payments are still outstanding?
+- Which customers have active issues?
+- What operational risks should I be aware of?
+- How was this week?
+
+## Core Design Principle
 
 ```text
 Messages are truth.
@@ -10,6 +43,8 @@ Entity mentions are observations.
 Canonical entities are interpretations.
 Answers are generated from evidence.
 ```
+
+PulseIQ intentionally preserves raw observations during ingestion. It does not merge `Machine 2` into `Machine 1`, rewrite message facts, or create risky canonical joins while saving employee updates. Query-time retrieval handles exact mentions, aliases, statuses, active issues, broad weekly summaries, and vector search.
 
 ## Repository Structure
 
@@ -30,8 +65,6 @@ Employee message
 -> Entity/status/time-range retrieval
 -> Evidence-backed answer generation
 ```
-
-PulseIQ intentionally preserves raw observations during ingestion. It does not merge `Machine 2` into `Machine 1`, rewrite message facts, or create risky canonical joins while saving employee updates. Query-time retrieval handles exact mentions, aliases, statuses, broad weekly summaries, and vector search.
 
 ## Roles
 
