@@ -1,0 +1,58 @@
+psql postgresql://pulseiq:pulseiq@localhost:5432/pulseiq -v ON_ERROR_STOP=1 -c "
+WITH target_entities AS (
+  SELECT entity_id AS id FROM entity_mentions
+  WHERE message_id = '44f14e36-f08b-4c91-af26-c9ec8a0422c0'
+),
+target_events AS (
+  SELECT event_id AS id FROM event_sources
+  WHERE message_id = '44f14e36-f08b-4c91-af26-c9ec8a0422c0'
+),
+deleted_embeddings AS (
+  DELETE FROM message_embeddings
+  WHERE message_id = '44f14e36-f08b-4c91-af26-c9ec8a0422c0'
+  RETURNING id
+),
+deleted_mentions AS (
+  DELETE FROM entity_mentions
+  WHERE message_id = '44f14e36-f08b-4c91-af26-c9ec8a0422c0'
+  RETURNING id
+),
+deleted_sources AS (
+  DELETE FROM event_sources
+  WHERE message_id = '44f14e36-f08b-4c91-af26-c9ec8a0422c0'
+  RETURNING event_id
+),
+deleted_events AS (
+  DELETE FROM events
+  WHERE id IN (SELECT id FROM target_events)
+    AND NOT EXISTS (
+      SELECT 1 FROM event_sources
+      WHERE event_sources.event_id = events.id
+    )
+  RETURNING id
+),
+deleted_entities AS (
+  DELETE FROM entities
+  WHERE id IN (SELECT id FROM target_entities)
+    AND NOT EXISTS (
+      SELECT 1 FROM entity_mentions
+      WHERE entity_mentions.entity_id = entities.id
+    )
+  RETURNING id
+),
+deleted_messages AS (
+  DELETE FROM messages
+  WHERE id = '44f14e36-f08b-4c91-af26-c9ec8a0422c0'
+  RETURNING id
+)
+SELECT
+  (SELECT count(*) FROM deleted_messages) AS messages_deleted,
+  (SELECT count(*) FROM deleted_embeddings) AS embeddings_deleted,
+  (SELECT count(*) FROM deleted_mentions) AS mentions_deleted,
+  (SELECT count(*) FROM deleted_sources) AS event_sources_deleted,
+  (SELECT count(*) FROM deleted_events) AS events_deleted,
+  (SELECT count(*) FROM deleted_entities) AS entities_deleted;
+"
+
+
+psql postgresql://pulseiq:pulseiq@localhost:5432/pulseiq -c "SELECT count(*) AS remaining_messages FROM messages WHERE id = '44f14e36-f08b-4c91-af26-c9ec8a0422c0';"

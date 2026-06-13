@@ -1,0 +1,31 @@
+.DS_Store
+.vscode/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+
+# Node / frontend
+node_modules/
+dist/
+build/
+.vite/
+
+# Logs and local runtime files
+*.log
+*.sqlite
+*.db
+
+# OS/editor files
+*.swp
+*.swo
